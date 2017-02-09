@@ -4,11 +4,11 @@
 
 # Give Praat the path to the directory where your audio files are stored
 # ASSIGN THIS VARIABLE TO THE PATH TO YOUR AUDIO DATA DIRECTORY
-directory$ = "/Users/sushantkafle/Dropbox/Courses/Spring17/SLT/Hackathon1/Dialects"
+directory$ = "./Dialects"
 
 # Give Praat the path to your output file
 # ASSIGN THIS VARIABLE TO THE FULL PATH TO YOUR OUTPUTFILE
-outputfile$ = "/Users/sushantkafle/Dropbox/Courses/Spring17/SLT/Hackathon1/dialects_.csv"
+outputfile$ = "./dialects_.csv"
 deleteFile: outputfile$ 
 
 # print a line to your output file containing the names of the features
