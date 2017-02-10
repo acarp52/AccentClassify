@@ -4,15 +4,15 @@
 
 # Give Praat the path to the directory where your audio files are stored
 # ASSIGN THIS VARIABLE TO THE PATH TO YOUR AUDIO DATA DIRECTORY
-directory$ = "./Dialects/mp3/"
+directory$ = "./Dialects/TestData/"
 
 # Give Praat the path to your output file
 # ASSIGN THIS VARIABLE TO THE FULL PATH TO YOUR OUTPUTFILE
-outputfile$ = "./uttlvl-feat.csv"
+outputfile$ = "./test-feat.csv"
 deleteFile: outputfile$ 
 
 # print a line to your output file containing the names of the features
-appendFileLine: outputfile$, "maxint,minint,meanint,maxf1,meanf1,maxf2,meanf2,maxf0,minf0,meanf0,jitter,shimmer,maxhnr,minhnr,meanhnr,dx"
+appendFileLine: outputfile$, "filename,maxint,minint,meanint,maxf1,meanf1,maxf2,meanf2,maxf0,minf0,meanf0,jitter,shimmer,maxhnr,minhnr,meanhnr,dx"
 
 # loop through the files one by one
 strings = Create Strings as file list: "list", directory$ + "/*.mp3"
@@ -43,7 +43,7 @@ for ifile to numberOfFiles
     meanintensity = Get mean: 0, 0, "energy"
 
     # print the info out to a file
-    appendFile: outputfile$, maxintensity, ",", minintensity, ",", meanintensity, ","
+    appendFile: outputfile$, fileIntro$, ",", maxintensity, ",", minintensity, ",", meanintensity, ","
 
     # make sure you select the sound again
     selectObject: "Sound " + fileIntro$
@@ -56,7 +56,7 @@ for ifile to numberOfFiles
 			 appendInfoLine: "formant"
          maxf = Get maximum: formnum, 0, 0, "Hertz", "Parabolic"
          meanf = Get mean: formnum, 0, 0, "Hertz"
-	 		 appendFile: outputfile$, maxf, ",", minf, ",", meanf, ","
+	 		 appendFile: outputfile$, maxf, ",", meanf, ","
     endfor
 	
 	# get F0
