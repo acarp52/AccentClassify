@@ -4,7 +4,7 @@
 
 # Give Praat the path to the directory where your audio files are stored
 # ASSIGN THIS VARIABLE TO THE PATH TO YOUR AUDIO DATA DIRECTORY
-directory$ = "./Dialects"
+directory$ = "./Dialects/mp3/"
 
 # Give Praat the path to your output file
 # ASSIGN THIS VARIABLE TO THE FULL PATH TO YOUR OUTPUTFILE
