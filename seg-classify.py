@@ -9,6 +9,24 @@ from sklearn.feature_selection import RFECV
 from sklearn import metrics
 import sys
 
+
+def k_fold_cross_validation(X, K, randomise = False):
+	"""
+	Generates K (training, validation) pairs from the items in X.
+
+	Each pair is a partition of X, where validation is an iterable
+	of length len(X)/K. So each training iterable is of length (K-1)*len(X)/K.
+
+	If randomise is true, a copy of X is shuffled before partitioning,
+	otherwise its order is preserved in training and validation.
+	"""
+	if randomise: from random import shuffle; X=list(X); shuffle(X)
+	for k in range(K):
+		training = [x for i, x in enumerate(X) if i % K != k]
+		validation = [x for i, x in enumerate(X) if i % K == k]
+		yield training, validation
+
+
 labels = []
 f = open(sys.argv[1])
 
@@ -40,32 +58,12 @@ gnb = GaussianNB()
 scores = cross_val_score(gnb, npdata, nptarget, cv=5, scoring='f1')
 print("Baseline classification F1:", np.average(scores))
 
-svc = SVC(kernel="linear")
-rfecv = RFECV(estimator=svc, step=1, cv=5, scoring='f1')
-selector = rfecv.fit(npdata, nptarget)
+X = [i for i in range(1,40)]
+for training, validation in k_fold_cross_validation(X, K=5):
+	npdata_train = npdata[training, :]
+	npdata_test = npdata[validation, :]
 
-selected_features = []
-npdata_sel = np.zeros((npdata.shape[0], selector.n_features_))
-
-index = 0
-for i, rank in enumerate(selector.ranking_):
-	if rank == 1:
-		selected_features.append(labels[i])
-		npdata_sel[:, index] = npdata[:, i]
-		index += 1
-
-print("Selected Features (%s)" %(','.join(selected_features)))
-print("New feature dimension (%d)" % npdata_sel.shape[1])
-
-scores = cross_val_score(svc, npdata_sel, nptarget, cv=5, scoring='f1')
-print("SVM (linear) classification F1 (with feature selection):", np.average(scores))
-
-scores = cross_val_score(SVC(kernel='rbf'), npdata_sel, nptarget, cv=5, scoring='f1')
-print("SVM (rbf) classification F1 (with feature selection):", np.average(scores))
-
-scores = cross_val_score(SVC(kernel='linear'), npdata, nptarget, cv=5, scoring='f1')
-print("SVM (linear) classification F1 (without feature selection):", np.average(scores))
-
+'''
 scores = cross_val_score(SVC(kernel='rbf'), npdata, nptarget, cv=5, scoring='f1')
 print("SVM (rbf) classification F1 (without feature selection):", np.average(scores))
 
@@ -74,3 +72,4 @@ print("SVM (rbf) classification F1 (without feature selection):", np.average(sco
 #scores = cross_val_score(gnb, npdata, nptarget, cv=5, scoring='f1')
 #print("Baseline classification F1:", np.average(scores))
 
+'''

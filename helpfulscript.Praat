@@ -8,11 +8,11 @@ directory$ = "./Dialects/mp3/"
 
 # Give Praat the path to your output file
 # ASSIGN THIS VARIABLE TO THE FULL PATH TO YOUR OUTPUTFILE
-outputfile$ = "./dialects_.csv"
+outputfile$ = "./uttlvl-feat.csv"
 deleteFile: outputfile$ 
 
 # print a line to your output file containing the names of the features
-appendFileLine: outputfile$, "maxint,meanint,maxf1,meanf1,maxf2,meanf2,maxf0,jitter,shimmer,hnr,dx"
+appendFileLine: outputfile$, "maxint,minint,meanint,maxf1,meanf1,maxf2,meanf2,maxf0,minf0,meanf0,jitter,shimmer,maxhnr,minhnr,meanhnr,dx"
 
 # loop through the files one by one
 strings = Create Strings as file list: "list", directory$ + "/*.mp3"
@@ -39,10 +39,11 @@ for ifile to numberOfFiles
     appendInfoLine: fileIntro$ + "intensity!"
 
     maxintensity = Get maximum: 0, 0, "Parabolic"
+	minintensity = Get minimum: 0, 0, "Parabolic"
     meanintensity = Get mean: 0, 0, "energy"
 
     # print the info out to a file
-    appendFile: outputfile$, maxintensity, ",", meanintensity, ","
+    appendFile: outputfile$, maxintensity, ",", minintensity, ",", meanintensity, ","
 
     # make sure you select the sound again
     selectObject: "Sound " + fileIntro$
@@ -55,14 +56,16 @@ for ifile to numberOfFiles
 			 appendInfoLine: "formant"
          maxf = Get maximum: formnum, 0, 0, "Hertz", "Parabolic"
          meanf = Get mean: formnum, 0, 0, "Hertz"
-	 		 appendFile: outputfile$, maxf, ",", meanf, ","
+	 		 appendFile: outputfile$, maxf, ",", minf, ",", meanf, ","
     endfor
 	
 	# get F0
 	selectObject: "Sound " + fileIntro$
 	To Pitch (ac): 0, 75, 15, "no", 0.03, 0.45, 0.01, 0.35, 0.14, 600
 	maxf0 = Get maximum: 0, 0, "Hertz", "Parabolic"
-	
+	minf0 = Get minimum: 0, 0, "Hertz", "Parabolic"
+	meanf0 = Get mean: 0, 0, "Hertz"
+	appendFile: outputfile$, maxf0, ",", minf0, ",", meanf0, ","
 	
 	# get jitter, shimmer
 	To PointProcess
@@ -70,11 +73,14 @@ for ifile to numberOfFiles
 	selectObject: "Sound " + fileIntro$
 	plusObject: "PointProcess " + fileIntro$
 	shimmer = Get shimmer (local): 0, 0, 0.0001, 0.02, 1.3, 1.6
+	appendFile: outputfile$, jitter, ",", shimmer, ","
 
 	selectObject: "Sound " + fileIntro$
 	To Harmonicity (ac): 0.01, 75, 0.1, 4.5
-	hnr = Get mean: 0, 0
-	appendFile: outputfile$, maxf0, ",", jitter, ",", shimmer, ",", hnr, ","
+	maxhnr = Get maximum: 0, 0, "Parabolic"
+	minhnr = Get minimum: 0, 0, "Parabolic"
+	meanhnr = Get mean: 0, 0
+	appendFile: outputfile$, maxhnr, ",", minhnr, ",", meanhnr, ","
 
     appendInfoLine: "data complete!"
 
@@ -97,6 +103,9 @@ for ifile to numberOfFiles
   	 removeObject: "Sound " + fileIntro$
 	 removeObject: "Formant " + fileIntro$
 	 removeObject: "Intensity " + fileIntro$
+	removeObject: "Pitch " + fileIntro$
+removeObject: "PointProcess " + fileIntro$
+removeObject: "Harmonicity " + fileIntro$
 
 
 endfor
