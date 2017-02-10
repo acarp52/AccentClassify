@@ -39,7 +39,6 @@ for ifile to numberOfFiles
     appendInfoLine: fileIntro$ + "intensity!"
 
     maxintensity = Get maximum: 0, 0, "Parabolic"
-	minintensity = Get minimum: 0, 0, "Parabolic"
     meanintensity = Get mean: 0, 0, "energy"
 
     # print the info out to a file
@@ -63,9 +62,7 @@ for ifile to numberOfFiles
 	selectObject: "Sound " + fileIntro$
 	To Pitch (ac): 0, 75, 15, "no", 0.03, 0.45, 0.01, 0.35, 0.14, 600
 	maxf0 = Get maximum: 0, 0, "Hertz", "Parabolic"
-	minf0 = Get minimum: 0, 0, "Hertz", "Parabolic"
-	meanf0 = Get mean: 0, 0, "Hertz"
-	appendFile: outputfile$, maxf0, ",", minf0, ",", meanf0, ","
+	
 	
 	# get jitter, shimmer
 	To PointProcess
@@ -73,14 +70,11 @@ for ifile to numberOfFiles
 	selectObject: "Sound " + fileIntro$
 	plusObject: "PointProcess " + fileIntro$
 	shimmer = Get shimmer (local): 0, 0, 0.0001, 0.02, 1.3, 1.6
-	appendFile: outputfile$, jitter, ",", shimmer, ","
 
 	selectObject: "Sound " + fileIntro$
 	To Harmonicity (ac): 0.01, 75, 0.1, 4.5
-	maxhnr = Get maximum: 0, 0, "Parabolic"
-	minhnr = Get minimum: 0, 0, "Parabolic"
-	meanhnr = Get mean: 0, 0
-	appendFile: outputfile$, maxhnr, ",", minhnr, ",", meanhnr, ","
+	hnr = Get mean: 0, 0
+	appendFile: outputfile$, maxf0, ",", jitter, ",", shimmer, ",", hnr, ","
 
     appendInfoLine: "data complete!"
 
@@ -103,9 +97,6 @@ for ifile to numberOfFiles
   	 removeObject: "Sound " + fileIntro$
 	 removeObject: "Formant " + fileIntro$
 	 removeObject: "Intensity " + fileIntro$
-	removeObject: "Pitch " + fileIntro$
-removeObject: "PointProcess " + fileIntro$
-removeObject: "Harmonicity " + fileIntro$
 
 
 endfor

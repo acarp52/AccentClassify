@@ -16,7 +16,7 @@ def main():
 
         while slices <= 20:
             newSlice = sound[startTime:endTime]
-            newSlice.export("Dialects/mp3/{0}_{1}.mp3".format(filename, slices), format="mp3")
+            newSlice.export("Dialects/mp3/{0}_{1}.mp3".format(filename[:-4], slices), format="mp3")
             startTime = endTime
             endTime = endTime + timeSlice
             slices += 1
