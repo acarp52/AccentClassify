@@ -4,15 +4,15 @@
 
 # Give Praat the path to the directory where your audio files are stored
 # ASSIGN THIS VARIABLE TO THE PATH TO YOUR AUDIO DATA DIRECTORY
-directory$ = "./Dialects/wav/"
+directory$ = "./Dialects/TestData/wav/"
 
 # Give Praat the path to your output file
 # ASSIGN THIS VARIABLE TO THE FULL PATH TO YOUR OUTPUTFILE
-outputfile$ = "./wrd-feats.csv"
+outputfile$ = "./test-wrd-feats.csv"
 deleteFile: outputfile$ 
 
 # print a line to your output file containing the names of the features
-appendFileLine: outputfile$, "maxint,minint,meanint,maxf1,minf1,meanf1,maxf2,minf2,meanf2,maxf0,minf0,meanf0,jitter,shimmer,maxhnr,minhnr,meanhnr,dx"
+appendFileLine: outputfile$, "filename,maxint,minint,meanint,maxf1,minf1,meanf1,maxf2,minf2,meanf2,maxf0,minf0,meanf0,jitter,shimmer,maxhnr,minhnr,meanhnr,dx"
 
 # loop through the files one by one
 strings = Create Strings as file list: "list", directory$ + "/*.wav"
@@ -64,7 +64,7 @@ for ifile to numberOfFiles
             maxintensity = Get maximum: pStart, pEnd, "Parabolic"
             minintensity = Get minimum: pStart, pEnd, "Parabolic"
             meanintensity = Get mean: pStart, pEnd, "energy"
-            appendFile: outputfile$, maxintensity, ",", minintensity, ",", meanintensity, ","
+            appendFile: outputfile$, fileIntro$, ",", maxintensity, ",", minintensity, ",", meanintensity, ","
 
             selectObject: "Formant " + fileIntro$
             for formnum from 1 to 2

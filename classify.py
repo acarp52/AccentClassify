@@ -49,15 +49,14 @@ print("You have ", test_npdata.shape[0], "testing instanaces")
 print("You have ", test_npdata.shape[1], "features")
 print("You have ", npdata.shape[1], "features")
 
-'''
+
 ## very, very basic classification with Naive Bayes classifier
 gnb = GaussianNB()
 scores = cross_val_score(gnb, npdata, nptarget, cv=5, scoring='f1')
 print("Baseline classification F1:", np.average(scores))
-'''
 
 svc = SVC(kernel="linear")
-rfecv = RFECV(estimator=svc, step=1, cv=5, scoring='f1')
+rfecv = RFECV(estimator=svc, step=1, cv=2, scoring='f1')
 selector = rfecv.fit(npdata, nptarget)
 
 selected_features = []
@@ -79,18 +78,19 @@ print("SVM (linear) classification F1 (with feature selection):", np.average(sco
 
 svc.fit(npdata_sel, nptarget)
 prediction = svc.predict(test_npdata_sel)
-outfile = open('output_svm_lin_feat.csv', 'w')
+outfile = open('_output_svm_lin_feat.csv', 'w')
 for i, p in enumerate(prediction):
 	outfile.write(filenames[i] + "," + str(prediction[i]) + "\n")
 outfile.close()
 
+
 svc = SVC(kernel='rbf')
-scores = cross_val_score(svc, npdata, nptarget, cv=5, scoring='f1')
-print("SVM (rbf) classification F1 (without feature selection):", np.average(scores))
+scores = cross_val_score(svc, npdata, nptarget, cv=2, scoring='f1')
+print("SVM (linear) classification F1 (without feature selection):", np.average(scores))
 
 svc.fit(npdata, nptarget)
 prediction = svc.predict(test_npdata)
-outfile = open('output_svm_rbf_all.csv', 'w')
+outfile = open('_output_svm_rbf_all.csv', 'w')
 for i, p in enumerate(prediction):
 	outfile.write(filenames[i] + "," + str(prediction[i]) + "\n")
 outfile.close()
